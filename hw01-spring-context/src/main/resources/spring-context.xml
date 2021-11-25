@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="csvLoader" class="ru.mherarsh.service.impl.CSVLoaderImpl">
+    </bean>
+
+    <bean id="questionRepository" class="ru.mherarsh.dao.impl.QuestionRepositoryCSV">
+        <constructor-arg name="csvLoader" ref="csvLoader"/>
+        <constructor-arg name="recourseName" value="questions.csv"/>
+    </bean>
+
+    <bean id="questionPrinter" class="ru.mherarsh.service.impl.QuestionsPrinterTerminal">
+        <constructor-arg name="questionRepository" ref="questionRepository"/>
+    </bean>
+</beans>
