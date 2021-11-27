@@ -5,12 +5,10 @@ import org.slf4j.LoggerFactory;
 import ru.mherarsh.dao.QuestionRepository;
 import ru.mherarsh.domain.Answer;
 import ru.mherarsh.domain.Question;
-import ru.mherarsh.domain.impl.AnswerImpl;
-import ru.mherarsh.domain.impl.QuestionImpl;
+import ru.mherarsh.exceptions.NoQuestionsInFileException;
 import ru.mherarsh.service.CSVLoader;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,33 +17,37 @@ public class QuestionRepositoryCSV implements QuestionRepository {
 
     private final String recourseName;
     private final CSVLoader csvLoader;
-    private final List<Question> questions = new ArrayList<>();
 
     public QuestionRepositoryCSV(CSVLoader csvLoader, String recourseName) {
         this.recourseName = recourseName;
         this.csvLoader = csvLoader;
-
-        loadQuestions();
     }
 
     @Override
     public List<Question> getQuestions() {
-        return Collections.unmodifiableList(questions);
+        return getQuestionsFromCsv();
     }
 
-    private void loadQuestions() {
+    private List<Question> getQuestionsFromCsv() {
         var questionsFromCsv = csvLoader.loadFileFromResource(recourseName);
+        var questions = new ArrayList<Question>();
 
         for (int i = 0; i < questionsFromCsv.size(); i++) {
             var questionLine = questionsFromCsv.get(i);
             var question = createFromQuestionLine(i, questionLine);
 
-            question.ifPresent(this::addQuestion);
+            question.ifPresent(questions::add);
         }
+
+        validateQuestions(questions);
+
+        return questions;
     }
 
-    private void addQuestion(Question question) {
-        questions.add(question);
+    private void validateQuestions(List<Question> questions) {
+        if (questions.isEmpty()) {
+            throw new NoQuestionsInFileException("no questions found in file: " + recourseName);
+        }
     }
 
     private Optional<Question> createFromQuestionLine(int questionId, List<String> questionLine) {
@@ -53,7 +55,7 @@ public class QuestionRepositoryCSV implements QuestionRepository {
             return Optional.empty();
         }
 
-        var question = new QuestionImpl(
+        var question = new Question(
                 questionId,
                 questionLine.get(0),
                 createAnswer(0, questionLine.get(1)),
@@ -72,7 +74,7 @@ public class QuestionRepositoryCSV implements QuestionRepository {
         return true;
     }
 
-    private ArrayList<Answer> getAnswerVariants(List<String> questionLine) {
+    private List<Answer> getAnswerVariants(List<String> questionLine) {
         var answers = new ArrayList<Answer>();
 
         for (int i = 2, j = 1; i < questionLine.size(); i++, j++) {
@@ -83,6 +85,6 @@ public class QuestionRepositoryCSV implements QuestionRepository {
     }
 
     private Answer createAnswer(int id, String answer) {
-        return new AnswerImpl(id, answer);
+        return new Answer(id, answer);
     }
 }

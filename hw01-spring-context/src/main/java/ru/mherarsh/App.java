@@ -1,23 +1,21 @@
 package ru.mherarsh;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import ru.mherarsh.enums.QuestionPrintMode;
 import ru.mherarsh.service.QuestionsPrinter;
 
 public class App {
-    private static ClassPathXmlApplicationContext context;
+    private static final Logger logger = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] args) {
-        try {
-            context = new ClassPathXmlApplicationContext("spring-context.xml");
+        try (var context = new ClassPathXmlApplicationContext("spring-context.xml")) {
+            var questionsPrinter = context.getBean(QuestionsPrinter.class);
 
-            var questionsPrinter= context.getBean(QuestionsPrinter.class);
-            questionsPrinter.printQuestions(QuestionPrintMode.QUESTIONS_AND_VARIANTS);
+            questionsPrinter.printQuestions();
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-        } finally {
-            context.close();
+            logger.error(e.getMessage());
         }
     }
 }

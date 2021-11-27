@@ -9,7 +9,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 
 class CSVLoaderImplTest {
-    private final CSVLoader csvLoader = new CSVLoaderImpl();
+    private static final String CSV_SEPARATOR = ";";
+    private final CSVLoader csvLoader = new CSVLoaderImpl(CSV_SEPARATOR);
 
     @Test
     @DisplayName("loadFileFromResourceTest: load non-existent resource file")

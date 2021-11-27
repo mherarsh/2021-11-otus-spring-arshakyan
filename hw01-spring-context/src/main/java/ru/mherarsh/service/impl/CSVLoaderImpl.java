@@ -1,30 +1,34 @@
 package ru.mherarsh.service.impl;
 
-import lombok.Getter;
-import lombok.Setter;
 import ru.mherarsh.service.CSVLoader;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CSVLoaderImpl implements CSVLoader {
-    @Getter
-    @Setter
-    private String separator = ";";
+    private final String separator;
+
+    public CSVLoaderImpl(String separator) {
+        this.separator = separator;
+    }
 
     @Override
     public List<List<String>> loadFileFromResource(String path) {
-        var fileStream = getFileFromResourceAsStream(path);
-        var fileLines = readStreamAsList(fileStream);
+        try (var fileStream = getFileFromResourceAsStream(path)) {
+            var fileLines = readStreamAsList(fileStream);
 
-        return splitLines(fileLines);
+            return splitLines(fileLines);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private List<String> readStreamAsList(InputStream inputStream) {
         try {
-            var linesArray = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8).split("\n");
+            var linesArray = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8).split(System.lineSeparator());
 
             return List.of(linesArray);
         } catch (Exception e) {
