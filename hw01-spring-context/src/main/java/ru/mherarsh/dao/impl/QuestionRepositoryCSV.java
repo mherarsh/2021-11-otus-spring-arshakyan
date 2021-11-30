@@ -51,7 +51,7 @@ public class QuestionRepositoryCSV implements QuestionRepository {
     }
 
     private Optional<Question> createFromQuestionLine(int questionId, List<String> questionLine) {
-        if (!isValidQuestionLine(questionLine)) {
+        if (isValidQuestionLine(questionLine)) {
             return Optional.empty();
         }
 
@@ -66,7 +66,7 @@ public class QuestionRepositoryCSV implements QuestionRepository {
     }
 
     private boolean isValidQuestionLine(List<String> questionLine) {
-        return questionLine != null && questionLine.size() >= 3;
+        return questionLine == null || questionLine.size() < 4;
     }
 
     private List<Answer> getAnswerVariants(List<String> questionLine) {
