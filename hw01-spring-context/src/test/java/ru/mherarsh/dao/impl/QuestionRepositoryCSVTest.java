@@ -15,7 +15,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 
 class QuestionRepositoryCSVTest {
-    private static final int INCORRECT_QUESTIONS_COUNT = 1;
     private List<Question> originalQuestion;
 
     public QuestionRepositoryCSVTest() {
