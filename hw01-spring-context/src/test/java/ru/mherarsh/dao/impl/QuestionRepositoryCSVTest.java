@@ -5,7 +5,7 @@ import org.mockito.Mockito;
 import ru.mherarsh.dao.QuestionRepository;
 import ru.mherarsh.domain.Answer;
 import ru.mherarsh.domain.Question;
-import ru.mherarsh.exceptions.NoQuestionsInFileException;
+import ru.mherarsh.exceptions.IncorrectQuestionFileException;
 import ru.mherarsh.service.CSVLoader;
 
 import java.util.List;
@@ -34,21 +34,19 @@ class QuestionRepositoryCSVTest {
     }
 
     @Test
-    @DisplayName("getQuestionsTest: no questions in file")
-    void getQuestionsEmptyTest() {
-        assertThatExceptionOfType(NoQuestionsInFileException.class).isThrownBy(() ->
-                getQuestionRepository(List.of()).getQuestions()
+    @DisplayName("getQuestionsTest: incorrect question line in file")
+    void getQuestionsIncorrectLineTest() {
+        assertThatExceptionOfType(IncorrectQuestionFileException.class).isThrownBy(() ->
+                getQuestionRepository(getIncorrectTestStringQuestionsList()).getQuestions()
         );
     }
 
     @Test
-    @DisplayName("getQuestionsTest: skip incorrect question line")
-    void getQuestionsSkipIncorrectTest() {
-        var questionRepository = getQuestionRepository(getTestStringQuestionsList());
-        var questions = questionRepository.getQuestions();
-
-        assertThat(getTestStringQuestionsList().size() - INCORRECT_QUESTIONS_COUNT)
-                .isEqualTo(questions.size());
+    @DisplayName("getQuestionsTest: no questions in file")
+    void getQuestionsEmptyTest() {
+        assertThatExceptionOfType(IncorrectQuestionFileException.class).isThrownBy(() ->
+                getQuestionRepository(List.of()).getQuestions()
+        );
     }
 
     private QuestionRepository getQuestionRepository(List<List<String>> testStringQuestionsList) {
@@ -69,6 +67,12 @@ class QuestionRepositoryCSVTest {
     }
 
     private List<List<String>> getTestStringQuestionsList() {
+        return List.of(
+                getTestQuestionLine()
+        );
+    }
+
+    private List<List<String>> getIncorrectTestStringQuestionsList() {
         return List.of(
                 getTestQuestionLine(),
                 List.of("incorrect question line")

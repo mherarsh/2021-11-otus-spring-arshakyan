@@ -1,11 +1,9 @@
 package ru.mherarsh.dao.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.mherarsh.dao.QuestionRepository;
 import ru.mherarsh.domain.Answer;
 import ru.mherarsh.domain.Question;
-import ru.mherarsh.exceptions.NoQuestionsInFileException;
+import ru.mherarsh.exceptions.IncorrectQuestionFileException;
 import ru.mherarsh.service.CSVLoader;
 
 import java.util.ArrayList;
@@ -13,8 +11,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class QuestionRepositoryCSV implements QuestionRepository {
-    private static final Logger logger = LoggerFactory.getLogger(QuestionRepositoryCSV.class);
-
     private final String recourseName;
     private final CSVLoader csvLoader;
 
@@ -36,7 +32,7 @@ public class QuestionRepositoryCSV implements QuestionRepository {
             var questionLine = questionsFromCsv.get(i);
             var question = createFromQuestionLine(i, questionLine);
 
-            question.ifPresent(questions::add);
+            question.ifPresentOrElse(questions::add, this::throwIncorrectFileException);
         }
 
         validateQuestions(questions);
@@ -44,10 +40,14 @@ public class QuestionRepositoryCSV implements QuestionRepository {
         return questions;
     }
 
-    private void validateQuestions(List<Question> questions) {
-        if (questions.isEmpty()) {
-            throw new NoQuestionsInFileException("no questions found in file: " + recourseName);
+    private void validateQuestions(ArrayList<Question> questions) {
+        if(questions.isEmpty()) {
+            throw new IncorrectQuestionFileException("Empty question file");
         }
+    }
+
+    private void throwIncorrectFileException() {
+        throw new IncorrectQuestionFileException("There is an invalid line in the question file");
     }
 
     private Optional<Question> createFromQuestionLine(int questionId, List<String> questionLine) {
@@ -66,12 +66,7 @@ public class QuestionRepositoryCSV implements QuestionRepository {
     }
 
     private boolean isValidQuestionLine(List<String> questionLine) {
-        if (questionLine == null || questionLine.size() < 3) {
-            logger.warn("incorrect question line: {}", questionLine);
-            return false;
-        }
-
-        return true;
+        return questionLine != null && questionLine.size() >= 3;
     }
 
     private List<Answer> getAnswerVariants(List<String> questionLine) {
