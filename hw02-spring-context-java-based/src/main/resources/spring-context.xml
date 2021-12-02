@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util
+        https://www.springframework.org/schema/util/spring-util.xsd">
+
+    <util:constant id="STDOUT" static-field="java.lang.System.out" />
+
+    <bean id="csvLoader" class="ru.mherarsh.service.impl.CSVLoaderImpl">
+        <constructor-arg name="separator" value=";"/>
+    </bean>
+
+    <bean id="questionRepository" class="ru.mherarsh.dao.impl.QuestionRepositoryCSV">
+        <constructor-arg name="csvLoader" ref="csvLoader"/>
+        <constructor-arg name="recourseName" value="questions.csv"/>
+    </bean>
+
+    <bean id="questionEncoder" class="ru.mherarsh.service.impl.QuestionAndAnswersEncoder">
+    </bean>
+
+    <bean id="printAdapter" class="ru.mherarsh.service.impl.PrintStreamAdapter">
+        <constructor-arg name="printStream" ref="STDOUT"/>
+    </bean>
+
+    <bean id="questionPrinter" class="ru.mherarsh.service.impl.QuestionsPrinterImpl">
+        <constructor-arg name="questionRepository" ref="questionRepository"/>
+        <constructor-arg name="questionEncoder" ref="questionEncoder"/>
+        <constructor-arg name="printAdapter" ref="printAdapter"/>
+    </bean>
+</beans>
