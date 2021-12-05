@@ -11,7 +11,7 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class QuestionAndAnswersEncoderTest {
-    private final QuestionEncoder questionEncoder = new QuestionAndAnswersEncoder();
+    private final QuestionEncoder questionEncoder = new QuestionAndAnswersEncoder(new AnswerIndexMapperNumbers());
 
     @Test
     @DisplayName("question to string encoder")

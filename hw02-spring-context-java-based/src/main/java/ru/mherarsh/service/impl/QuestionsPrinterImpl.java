@@ -1,11 +1,14 @@
 package ru.mherarsh.service.impl;
 
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.mherarsh.dao.QuestionRepository;
+import ru.mherarsh.domain.Question;
 import ru.mherarsh.service.PrintAdapter;
 import ru.mherarsh.service.QuestionEncoder;
 import ru.mherarsh.service.QuestionsPrinter;
 
+@Service
 @AllArgsConstructor
 public class QuestionsPrinterImpl implements QuestionsPrinter {
     private final QuestionRepository questionRepository;
@@ -19,7 +22,13 @@ public class QuestionsPrinterImpl implements QuestionsPrinter {
         for (var question : questions) {
             var encodedQuestion = questionEncoder.encode(question);
 
-            printAdapter.print(encodedQuestion);
+            printAdapter.println(encodedQuestion);
         }
+    }
+
+    @Override
+    public void printQuestion(Question question) {
+        var encodedQuestion = questionEncoder.encode(question);
+        printAdapter.println(encodedQuestion);
     }
 }

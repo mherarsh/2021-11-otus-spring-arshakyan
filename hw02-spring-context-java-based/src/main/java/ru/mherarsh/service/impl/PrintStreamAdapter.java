@@ -12,8 +12,14 @@ public class PrintStreamAdapter implements PrintAdapter {
     }
 
     @Override
-    public void print(String message) {
+    public void println(String message) {
         printStream.println(message);
+        printStream.flush();
+    }
+
+    @Override
+    public void print(String message) {
+        printStream.print(message);
         printStream.flush();
     }
 }

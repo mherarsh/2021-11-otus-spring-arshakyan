@@ -1,9 +1,18 @@
 package ru.mherarsh.service.impl;
 
+import org.springframework.stereotype.Service;
 import ru.mherarsh.domain.Question;
+import ru.mherarsh.service.AnswerIndexMapper;
 import ru.mherarsh.service.QuestionEncoder;
 
+@Service
 public class QuestionAndAnswersEncoder implements QuestionEncoder {
+    private final AnswerIndexMapper answerIndexMapper;
+
+    public QuestionAndAnswersEncoder(AnswerIndexMapper answerIndexMapper) {
+        this.answerIndexMapper = answerIndexMapper;
+    }
+
     @Override
     public String encode(Question question) {
         return String.format(
@@ -26,7 +35,7 @@ public class QuestionAndAnswersEncoder implements QuestionEncoder {
             var answers = question.getAnswerVariants().get(i);
 
             variantsBuilder
-                    .append(String.format("\t%s. ", answers.getId()))
+                    .append(String.format("\t%s. ", answerIndexMapper.indexToDescription(i)))
                     .append(answers.getAnswerDescription());
 
             appendNewLineIfNotLast(question, variantsBuilder, i);
