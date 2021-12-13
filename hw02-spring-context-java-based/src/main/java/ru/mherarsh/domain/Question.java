@@ -27,8 +27,8 @@ public class Question {
         return answer;
     }
 
-    public boolean isAnswer(int answerIndex) {
-        return this.answer.equals(answerVariants.get(answerIndex));
+    public boolean isRightAnswer(Answer answer) {
+        return this.answer.equals(answer);
     }
 
     public boolean isValidAnswerIndex(int answerIndex) {

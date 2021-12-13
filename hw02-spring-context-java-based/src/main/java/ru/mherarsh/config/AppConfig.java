@@ -6,14 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import ru.mherarsh.dao.QuestionRepository;
 import ru.mherarsh.dao.impl.QuestionRepositoryCSV;
-import ru.mherarsh.service.CSVLoader;
-import ru.mherarsh.service.PrintAdapter;
-import ru.mherarsh.service.ReaderAdapter;
-import ru.mherarsh.service.TestScoreCalculationService;
-import ru.mherarsh.service.impl.CSVLoaderImpl;
-import ru.mherarsh.service.impl.PrintStreamAdapter;
-import ru.mherarsh.service.impl.ReaderStreamAdapter;
-import ru.mherarsh.service.impl.TestScoreCalculationServiceImpl;
+import ru.mherarsh.service.*;
+import ru.mherarsh.service.impl.*;
 
 @Configuration
 @PropertySource("classpath:application.properties")
@@ -43,7 +37,7 @@ public class AppConfig {
     }
 
     @Bean
-    ReaderAdapter readerAdapter(PrintAdapter printAdapter) {
+    ReaderAdapter readerAdapter() {
         return new ReaderStreamAdapter(System.in);
     }
 

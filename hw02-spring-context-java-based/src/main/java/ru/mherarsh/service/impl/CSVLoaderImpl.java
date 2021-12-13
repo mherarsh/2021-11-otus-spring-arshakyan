@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CSVLoaderImpl implements CSVLoader {
+    private static final String WINDOWS_LINE_SEPARATOR = "\r\n";
+    private static final String LINUX_LINE_SEPARATOR = "\n";
+
     private final String separator;
 
     public CSVLoaderImpl(String separator) {
@@ -28,12 +31,21 @@ public class CSVLoaderImpl implements CSVLoader {
 
     private List<String> readStreamAsList(InputStream inputStream) {
         try {
-            var linesArray = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8).split(System.lineSeparator());
+            var inputString = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            var linesArray =  inputString.split(getLineSeparator(inputString));
 
             return List.of(linesArray);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String getLineSeparator(String text){
+        if(text != null && text.contains(WINDOWS_LINE_SEPARATOR)){
+            return WINDOWS_LINE_SEPARATOR;
+        }
+
+        return LINUX_LINE_SEPARATOR;
     }
 
     private List<List<String>> splitLines(List<String> fileLines) {
