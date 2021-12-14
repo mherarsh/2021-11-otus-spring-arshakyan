@@ -20,8 +20,8 @@ public class TestingServiceImpl implements TestingService {
     public void run() {
         var person = personService.getNewPerson();
         var questions = questionRepository.getQuestions();
+        var testResults = questionAskService.askQuestions(questions, person);
 
-        person = questionAskService.askQuestions(questions, person);
-        testScoreCalculationService.printResults(person);
+        testScoreCalculationService.printResults(testResults);
     }
 }

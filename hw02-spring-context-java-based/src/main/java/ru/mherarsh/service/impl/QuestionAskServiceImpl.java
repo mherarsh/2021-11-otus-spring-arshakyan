@@ -22,15 +22,15 @@ public class QuestionAskServiceImpl implements QuestionAskService {
     private final AnswerIndexMapper answerIndexMapper;
 
     @Override
-    public Person askQuestions(List<Question> questions, Person person) {
-        var testResults = TestResults.builder().build();
+    public TestResults askQuestions(List<Question> questions, Person person) {
+        var testResults = TestResults.ofPerson(person);
 
         for (var question : questions) {
             var isCorrect = askQuestion(question);
             testResults.pushResults(question, isCorrect);
         }
 
-        return person.toBuilder().testResults(testResults).build();
+        return testResults;
     }
 
     @Override

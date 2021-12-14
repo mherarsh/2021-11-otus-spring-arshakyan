@@ -1,6 +1,5 @@
 package ru.mherarsh.service.impl;
 
-import ru.mherarsh.domain.Person;
 import ru.mherarsh.domain.TestResults;
 import ru.mherarsh.service.PrintAdapter;
 import ru.mherarsh.service.TestScoreCalculationService;
@@ -17,14 +16,14 @@ public class TestScoreCalculationServiceImpl implements TestScoreCalculationServ
     }
 
     @Override
-    public void printResults(Person person) {
-        printAdapter.println(getResultMessage(person));
+    public void printResults(TestResults testResults) {
+        printAdapter.println(getResultMessage(testResults));
     }
 
-    private String getResultMessage(Person person) {
+    private String getResultMessage(TestResults testResults) {
         return String.format("%s%s, test is %s", System.lineSeparator(),
-                person,
-                isTestPassed(person.getTestResults()) ? "passed" : "failed");
+                testResults.getPerson(),
+                isTestPassed(testResults) ? "passed" : "failed");
     }
 
     private boolean isTestPassed(TestResults results) {

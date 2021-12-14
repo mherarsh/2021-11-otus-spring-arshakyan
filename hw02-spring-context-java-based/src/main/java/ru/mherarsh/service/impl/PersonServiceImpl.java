@@ -15,7 +15,7 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public Person getNewPerson() {
-        return Person.builder().name(readName()).build();
+        return Person.fromName(readName());
     }
 
     private String readName() {

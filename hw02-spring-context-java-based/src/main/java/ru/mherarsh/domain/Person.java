@@ -1,13 +1,18 @@
 package ru.mherarsh.domain;
 
-import lombok.Builder;
-import lombok.Getter;
-
-@Builder(toBuilder=true)
-@Getter
 public class Person {
     private String name;
-    private TestResults testResults;
+
+    private Person() {
+    }
+
+    private Person(String name) {
+        this.name = name;
+    }
+
+    public static Person fromName(String name) {
+        return new Person(name);
+    }
 
     @Override
     public String toString() {

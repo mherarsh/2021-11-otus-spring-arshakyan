@@ -1,7 +1,7 @@
 package ru.mherarsh.service;
 
-import ru.mherarsh.domain.Person;
+import ru.mherarsh.domain.TestResults;
 
 public interface TestScoreCalculationService {
-    void printResults(Person person);
+    void printResults(TestResults testResults);
 }
