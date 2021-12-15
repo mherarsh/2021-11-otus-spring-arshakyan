@@ -11,6 +11,7 @@
     <modules>
         <module>hw01-spring-context</module>
         <module>hw02-spring-context-java-based</module>
+        <module>hw03-spring-boot</module>
     </modules>
 
     <properties>
