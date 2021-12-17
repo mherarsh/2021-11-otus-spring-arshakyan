@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest
 class CSVLoaderImplTest {
     @Configuration
-    static class BeanConfig {
+    static class TestConfig {
         private static final String CSV_SEPARATOR = ";";
 
         @Bean

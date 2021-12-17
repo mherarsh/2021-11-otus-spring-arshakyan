@@ -20,7 +20,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 @SpringBootTest
 class QuestionRepositoryCSVTest {
     @Configuration
-    static class BeanConfig {
+    static class TestConfig {
     }
 
     @MockBean
