@@ -3,14 +3,17 @@ package ru.mherarsh.service.impl;
 import org.springframework.stereotype.Service;
 import ru.mherarsh.domain.Question;
 import ru.mherarsh.service.AnswerIndexMapper;
+import ru.mherarsh.service.MessageLocalisationService;
 import ru.mherarsh.service.QuestionEncoder;
 
 @Service
 public class QuestionAndAnswersEncoder implements QuestionEncoder {
     private final AnswerIndexMapper answerIndexMapper;
+    private final MessageLocalisationService localisationService;
 
-    public QuestionAndAnswersEncoder(AnswerIndexMapper answerIndexMapper) {
+    public QuestionAndAnswersEncoder(AnswerIndexMapper answerIndexMapper, MessageLocalisationService localisationService) {
         this.answerIndexMapper = answerIndexMapper;
+        this.localisationService = localisationService;
     }
 
     @Override
@@ -24,12 +27,17 @@ public class QuestionAndAnswersEncoder implements QuestionEncoder {
     }
 
     private String getQuestionString(Question question) {
-        return String.format("Q: %s", question.getQuestionDescription());
+        return String.format(
+                "%s: %s",
+                localisationService.getMessage("strings.question"),
+                question.getQuestionDescription()
+        );
     }
 
     private String getAnswerVariantsString(Question question) {
         var variantsBuilder = new StringBuilder()
-                .append("Variants:").append(System.lineSeparator());
+                .append(String.format("%s:", localisationService.getMessage("strings.variants")))
+                .append(System.lineSeparator());
 
         for (var i = 0; i < question.getAnswerVariants().size(); i++) {
             var answers = question.getAnswerVariants().get(i);

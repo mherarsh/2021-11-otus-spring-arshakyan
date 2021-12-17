@@ -1,0 +1,11 @@
+${AnsiColor.YELLOW}***********************************************************************************************************************
+${AnsiStyle.BOLD} ${AnsiColor.RED}  _______   ______    _____   _______   ______   _____
+${AnsiStyle.BOLD} ${AnsiColor.RED} |__   __| |  ____|  / ____| |__   __| |  ____| |  __ \
+${AnsiStyle.BOLD} ${AnsiColor.RED}    | |    | |__    | (___      | |    | |__    | |__) |
+${AnsiStyle.BOLD} ${AnsiColor.RED}    | |    |  __|    \___ \     | |    |  __|   |  _  /
+${AnsiStyle.BOLD} ${AnsiColor.RED}    | |    | |____   ____) |    | |    | |____  | | \ \
+${AnsiStyle.BOLD} ${AnsiColor.RED}    |_|    |______| |_____/     |_|    |______| |_|  \_\
+${AnsiStyle.BOLD} ${AnsiColor.RED}${AnsiStyle.NORMAL}
+${AnsiColor.GREEN}Powered by Spring Boot ${spring-boot.version}
+${AnsiColor.YELLOW}***********************************************************************************************************************
+${AnsiColor.DEFAULT}

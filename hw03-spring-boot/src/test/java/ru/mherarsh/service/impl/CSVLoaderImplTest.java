@@ -2,15 +2,30 @@ package ru.mherarsh.service.impl;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import ru.mherarsh.service.CSVLoader;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
+@SpringBootTest
 class CSVLoaderImplTest {
-    private static final String CSV_SEPARATOR = ";";
-    private final CSVLoader csvLoader = new CSVLoaderImpl(CSV_SEPARATOR);
+    @Configuration
+    static class BeanConfig {
+        private static final String CSV_SEPARATOR = ";";
+
+        @Bean
+        CSVLoader csvLoader() {
+            return new CSVLoaderImpl(CSV_SEPARATOR);
+        }
+    }
+
+    @Autowired
+    private CSVLoader csvLoader;
 
     @Test
     @DisplayName("loadFileFromResourceTest: load non-existent resource file")

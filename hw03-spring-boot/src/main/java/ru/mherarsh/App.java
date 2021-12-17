@@ -1,15 +1,11 @@
 package ru.mherarsh;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import ru.mherarsh.service.TestingService;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@ComponentScan("ru.mherarsh")
-@Configuration
+@SpringBootApplication
 public class App {
     public static void main(String[] args) {
-        var context = new AnnotationConfigApplicationContext(App.class);
-        context.getBean(TestingService.class).run();
+        SpringApplication.run(App.class, args);
     }
 }

@@ -1,34 +1,31 @@
 package ru.mherarsh.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import ru.mherarsh.dao.QuestionRepository;
 import ru.mherarsh.dao.impl.QuestionRepositoryCSV;
 import ru.mherarsh.service.*;
-import ru.mherarsh.service.impl.*;
+import ru.mherarsh.service.impl.CSVLoaderImpl;
+import ru.mherarsh.service.impl.PrintStreamAdapter;
+import ru.mherarsh.service.impl.ReaderStreamAdapter;
+import ru.mherarsh.service.impl.TestScoreCalculationServiceImpl;
 
 @Configuration
-@PropertySource("classpath:application.properties")
 public class AppConfig {
-    @Value("${csv.separator}")
-    private String csvSeparator;
+    private final AppProperties appProperties;
 
-    @Value("${csv.path}")
-    private String csvPath;
-
-    @Value("${test.minimum.score}")
-    private int testMinimumScore;
+    public AppConfig(AppProperties appProperties) {
+        this.appProperties = appProperties;
+    }
 
     @Bean
     CSVLoader csvLoader() {
-        return new CSVLoaderImpl(csvSeparator);
+        return new CSVLoaderImpl(appProperties.getLocaleConfig().getCsvSeparator());
     }
 
     @Bean
     QuestionRepository questionRepository(CSVLoader csvLoader) {
-        return new QuestionRepositoryCSV(csvLoader, csvPath);
+        return new QuestionRepositoryCSV(csvLoader, appProperties.getLocaleConfig().getCsvPath());
     }
 
     @Bean
@@ -42,7 +39,7 @@ public class AppConfig {
     }
 
     @Bean
-    TestScoreCalculationService testResultCalculationService(PrintAdapter printAdapter){
-        return new TestScoreCalculationServiceImpl(printAdapter, testMinimumScore);
+    TestScoreCalculationService testResultCalculationService(PrintAdapter printAdapter, MessageLocalisationService localisationService) {
+        return new TestScoreCalculationServiceImpl(printAdapter, appProperties.getTest().getMinimumScore(), localisationService);
     }
 }

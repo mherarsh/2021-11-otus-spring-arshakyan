@@ -20,6 +20,7 @@ public class QuestionAskServiceImpl implements QuestionAskService {
     private final QuestionsPrinter questionsPrinter;
     private final UserInputService userInputService;
     private final AnswerIndexMapper answerIndexMapper;
+    private final MessageLocalisationService localisationService;
 
     @Override
     public TestResults askQuestions(List<Question> questions, Person person) {
@@ -36,7 +37,10 @@ public class QuestionAskServiceImpl implements QuestionAskService {
     @Override
     public boolean askQuestion(Question question) {
         questionsPrinter.printQuestion(question);
-        var selectedAnswer = userInputService.getInput("choose answer", answer -> validateAnswer(answer, question));
+        var selectedAnswer = userInputService.getInput(
+                localisationService.getMessage("strings.choose-answer"),
+                answer -> validateAnswer(answer, question)
+        );
 
         return isRightAnswer(question, selectedAnswer);
     }

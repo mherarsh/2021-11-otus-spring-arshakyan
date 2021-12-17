@@ -1,6 +1,8 @@
 package ru.mherarsh.service.impl;
 
 import lombok.AllArgsConstructor;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import ru.mherarsh.dao.QuestionRepository;
 import ru.mherarsh.service.PersonService;
@@ -17,6 +19,7 @@ public class TestingServiceImpl implements TestingService {
     private final PersonService personService;
 
     @Override
+    @EventListener(ApplicationReadyEvent.class)
     public void run() {
         var person = personService.getNewPerson();
         var questions = questionRepository.getQuestions();

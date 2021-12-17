@@ -2,16 +2,52 @@ package ru.mherarsh.service.impl;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import ru.mherarsh.domain.Answer;
 import ru.mherarsh.domain.Question;
+import ru.mherarsh.service.MessageLocalisationService;
 import ru.mherarsh.service.QuestionEncoder;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
+@SpringBootTest()
 class QuestionAndAnswersEncoderTest {
-    private final QuestionEncoder questionEncoder = new QuestionAndAnswersEncoder(new AnswerIndexMapperNumbers());
+    @Configuration
+    @Import(value = {
+            QuestionAndAnswersEncoder.class,
+            AnswerIndexMapperNumbers.class
+    })
+    static class BeanConfig {
+    }
+
+    @TestConfiguration
+    static class TestConfig {
+        @MockBean
+        MessageLocalisationService localisationService;
+
+        @PostConstruct
+        void setUpLocalisationService() {
+            Mockito.doReturn("Q")
+                    .when(localisationService)
+                    .getMessage("strings.question");
+
+            Mockito.doReturn("Variants")
+                    .when(localisationService)
+                    .getMessage("strings.variants");
+        }
+    }
+
+    @Autowired
+    private QuestionEncoder questionEncoder;
 
     @Test
     @DisplayName("question to string encoder")

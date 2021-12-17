@@ -1,7 +1,11 @@
 package ru.mherarsh.dao.impl;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Configuration;
 import ru.mherarsh.dao.QuestionRepository;
 import ru.mherarsh.domain.Answer;
 import ru.mherarsh.domain.Question;
@@ -12,9 +16,16 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
 
+@SpringBootTest
 class QuestionRepositoryCSVTest {
+    @Configuration
+    static class BeanConfig {
+    }
+
+    @MockBean
+    private CSVLoader csvLoader;
+
     private List<Question> originalQuestion;
 
     public QuestionRepositoryCSVTest() {
@@ -49,20 +60,11 @@ class QuestionRepositoryCSVTest {
     }
 
     private QuestionRepository getQuestionRepository(List<List<String>> testStringQuestionsList) {
-        return new QuestionRepositoryCSV(
-                getCsvLoaderFromQuestions(testStringQuestionsList),
-                anyString()
-        );
-    }
-
-    private CSVLoader getCsvLoaderFromQuestions(List<List<String>> testStringQuestionsList) {
-        var csvLoader = mock(CSVLoader.class);
-
         Mockito.doReturn(testStringQuestionsList)
                 .when(csvLoader)
                 .loadFileFromResource(anyString());
 
-        return csvLoader;
+        return new QuestionRepositoryCSV(csvLoader, anyString());
     }
 
     private List<List<String>> getTestStringQuestionsList() {

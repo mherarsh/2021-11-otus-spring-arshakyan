@@ -3,35 +3,65 @@ package ru.mherarsh.service.impl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 import ru.mherarsh.domain.Answer;
 import ru.mherarsh.domain.Question;
 import ru.mherarsh.service.*;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
+@SpringBootTest
 class QuestionAskServiceImplTest {
-    private final UserInputService userInputService;
-    private final AnswerIndexMapper answerIndexMapper;
-    private final QuestionAskService questionAskService;
-
-    QuestionAskServiceImplTest() {
-        var questionsPrinter = Mockito.mock(QuestionsPrinter.class);
-        answerIndexMapper = Mockito.mock(AnswerIndexMapper.class);
-        userInputService = Mockito.mock(UserInputService.class);
-
-        this.questionAskService = new QuestionAskServiceImpl(
-                questionsPrinter,
-                userInputService,
-                answerIndexMapper
-        );
+    @Configuration
+    @Import(value = {QuestionAskServiceImpl.class})
+    static class BeanConfig {
     }
+
+    @TestConfiguration
+    static class TestConfig {
+        @MockBean
+        private UserInputService userInputService;
+
+        @MockBean
+        private AnswerIndexMapper answerIndexMapper;
+
+        @MockBean
+        QuestionsPrinter questionsPrinter;
+
+        @MockBean
+        MessageLocalisationService localisationService;
+
+        @PostConstruct
+        void setUpLocalisationService() {
+            Mockito.doReturn("choose answer")
+                    .when(localisationService)
+                    .getMessage("strings.choose-answer");
+        }
+    }
+
+    @Autowired
+    private UserInputService userInputService;
+
+    @Autowired
+    private AnswerIndexMapper answerIndexMapper;
+
+    @Autowired
+    private QuestionAskService questionAskService;
 
     @Test
     @DisplayName("askQuestionTest: correct answer")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void askQuestionTest() {
         Mockito.doReturn(1)
                 .when(answerIndexMapper)
@@ -50,6 +80,7 @@ class QuestionAskServiceImplTest {
 
     @Test
     @DisplayName("askQuestionTest: incorrect answer")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void askQuestionIncorrectTest() {
         Mockito.doReturn(2)
                 .when(answerIndexMapper)
