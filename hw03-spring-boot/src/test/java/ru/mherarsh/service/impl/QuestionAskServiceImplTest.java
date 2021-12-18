@@ -33,10 +33,10 @@ class QuestionAskServiceImplTest {
     private AnswerIndexMapper answerIndexMapper;
 
     @MockBean
-    QuestionsPrinter questionsPrinter;
+    private QuestionsPrinter questionsPrinter;
 
     @MockBean
-    MessageLocalisationService localisationService;
+    private MessageLocalisationService localisationService;
 
     @Autowired
     private QuestionAskService questionAskService;
