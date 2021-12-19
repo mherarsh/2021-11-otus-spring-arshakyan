@@ -1,52 +1,66 @@
 package ru.mherarsh.service.impl;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.mherarsh.service.CSVLoader;
+import ru.mherarsh.service.CSVSource;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.doReturn;
 
-@SpringBootTest
+@SpringBootTest(classes = {CSVLoaderImpl.class})
 class CSVLoaderImplTest {
-    @Configuration
-    static class TestConfig {
-        private static final String CSV_SEPARATOR = ";";
-
-        @Bean
-        CSVLoader csvLoader() {
-            return new CSVLoaderImpl(CSV_SEPARATOR);
-        }
-    }
+    @MockBean
+    private CSVSource csvSource;
 
     @Autowired
     private CSVLoader csvLoader;
 
+    @BeforeEach
+    void setUp() {
+        doReturn(";")
+                .when(csvSource)
+                .getCsvSeparator();
+    }
+
     @Test
     @DisplayName("loadFileFromResourceTest: load non-existent resource file")
     void loadFileFromResourceNonExistentTest() {
+        doReturn("no-file.csv")
+                .when(csvSource)
+                .getCsvPath();
+
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> csvLoader.loadFileFromResource("no-file.csv"));
+                .isThrownBy(() -> csvLoader.loadFileFromResource(csvSource));
     }
 
     @Test
     @DisplayName("loadFileFromResourceTest: load existent resource file")
     void loadFileFromResourceExistingTest() {
+        doReturn("csv-loader-data-test.csv")
+                .when(csvSource)
+                .getCsvPath();
+
         assertThatNoException()
-                .isThrownBy(() -> csvLoader.loadFileFromResource("csv-loader-data-test.csv"));
+                .isThrownBy(() -> csvLoader.loadFileFromResource(csvSource));
     }
 
     @Test
     @DisplayName("loadFileFromResourceTest: dataset test")
     void loadFileFromResourceDataSetTest() {
+        doReturn("csv-loader-data-test.csv")
+                .when(csvSource)
+                .getCsvPath();
+
         assertThatNoException().isThrownBy(() -> {
             var originalData = getOriginalData();
-            var loadedData = csvLoader.loadFileFromResource("csv-loader-data-test.csv");
+            var loadedData = csvLoader.loadFileFromResource(csvSource);
 
             assertThat(originalData).isEqualTo(loadedData);
         });

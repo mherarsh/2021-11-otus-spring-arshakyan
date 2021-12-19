@@ -1,22 +1,25 @@
 package ru.mherarsh.dao.impl;
 
+import org.springframework.stereotype.Service;
 import ru.mherarsh.dao.QuestionRepository;
 import ru.mherarsh.domain.Answer;
 import ru.mherarsh.domain.Question;
 import ru.mherarsh.exceptions.IncorrectQuestionFileException;
 import ru.mherarsh.service.CSVLoader;
+import ru.mherarsh.service.LocaleConfig;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class QuestionRepositoryCSV implements QuestionRepository {
-    private final String recourseName;
     private final CSVLoader csvLoader;
+    private final LocaleConfig localeConfig;
 
-    public QuestionRepositoryCSV(CSVLoader csvLoader, String recourseName) {
-        this.recourseName = recourseName;
+    public QuestionRepositoryCSV(CSVLoader csvLoader, LocaleConfig localeConfig) {
         this.csvLoader = csvLoader;
+        this.localeConfig = localeConfig;
     }
 
     @Override
@@ -25,7 +28,7 @@ public class QuestionRepositoryCSV implements QuestionRepository {
     }
 
     private List<Question> getQuestionsFromCsv() {
-        var questionsFromCsv = csvLoader.loadFileFromResource(recourseName);
+        var questionsFromCsv = csvLoader.loadFileFromResource(localeConfig.getCsvSource());
         var questions = new ArrayList<Question>();
 
         for (int i = 0; i < questionsFromCsv.size(); i++) {
@@ -41,7 +44,7 @@ public class QuestionRepositoryCSV implements QuestionRepository {
     }
 
     private void validateQuestions(ArrayList<Question> questions) {
-        if(questions.isEmpty()) {
+        if (questions.isEmpty()) {
             throw new IncorrectQuestionFileException("Empty question file");
         }
     }

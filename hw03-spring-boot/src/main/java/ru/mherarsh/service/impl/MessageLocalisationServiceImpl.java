@@ -2,35 +2,33 @@ package ru.mherarsh.service.impl;
 
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-import ru.mherarsh.config.AppProperties;
+import ru.mherarsh.service.LocaleConfig;
 import ru.mherarsh.service.MessageLocalisationService;
-
-import java.util.Locale;
 
 @Service
 public class MessageLocalisationServiceImpl implements MessageLocalisationService {
     private final MessageSource messageSource;
-    private final AppProperties appProperties;
+    private final LocaleConfig localeConfig;
 
-    public MessageLocalisationServiceImpl(MessageSource messageSource, AppProperties appProperties) {
+    public MessageLocalisationServiceImpl(MessageSource messageSource, LocaleConfig localeConfig) {
         this.messageSource = messageSource;
-        this.appProperties = appProperties;
+        this.localeConfig = localeConfig;
     }
 
     @Override
-    public String getMessage(String code, Object[] args) {
-        var locale = Locale.forLanguageTag(appProperties.getLocaleConfig().getLocale());
-
-        return messageSource.getMessage(code, args, locale);
+    public String getMessage(String code, Object... args) {
+        return messageSource.getMessage(code, args, localeConfig.getLocale());
     }
 
     @Override
     public String getMessage(String code, Object arg) {
-        return getMessage(code, new Object[]{arg});
+        var args = new Object[]{arg};
+        return getMessage(code, args);
     }
 
     @Override
     public String getMessage(String code) {
-        return getMessage(code, new Object[]{});
+        var args = new Object[]{};
+        return getMessage(code, args);
     }
 }

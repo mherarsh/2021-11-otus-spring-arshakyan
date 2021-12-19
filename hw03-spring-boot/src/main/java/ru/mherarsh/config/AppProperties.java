@@ -5,9 +5,12 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
+import ru.mherarsh.service.CSVSource;
+import ru.mherarsh.service.LocaleConfig;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Locale;
 import java.util.Map;
 
 @Getter
@@ -15,18 +18,18 @@ import java.util.Map;
 @Component
 @Validated
 @ConfigurationProperties("app")
-public class AppProperties {
+public class AppProperties implements LocaleConfig {
     private static final String DEFAULT_LANG_CONFIG_NAME = "default";
 
     private String lang;
 
     @NotEmpty
-    private Map<String, LocaleConfig> langs;
+    private Map<String, AppLangConfig> langs;
 
     @NotNull
     private Test test;
 
-    public LocaleConfig getLocaleConfig() {
+    public AppLangConfig getAppLangConfig() {
         var langConfigName = getAppLangConfigName();
 
         if (!langs.containsKey(langConfigName)) {
@@ -34,6 +37,16 @@ public class AppProperties {
         }
 
         return langs.get(langConfigName);
+    }
+
+    @Override
+    public Locale getLocale() {
+        return Locale.forLanguageTag(getAppLangConfig().getLocale());
+    }
+
+    @Override
+    public CSVSource getCsvSource() {
+        return getAppLangConfig();
     }
 
     private String getAppLangConfigName() {
@@ -46,7 +59,7 @@ public class AppProperties {
 
     @Getter
     @Setter
-    public static class LocaleConfig {
+    public static class AppLangConfig implements CSVSource {
         private String csvSeparator;
         private String csvPath;
         private String locale;

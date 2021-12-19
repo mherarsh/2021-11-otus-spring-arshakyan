@@ -2,7 +2,7 @@ package ru.mherarsh.dao.impl;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
@@ -11,60 +11,73 @@ import ru.mherarsh.domain.Answer;
 import ru.mherarsh.domain.Question;
 import ru.mherarsh.exceptions.IncorrectQuestionFileException;
 import ru.mherarsh.service.CSVLoader;
+import ru.mherarsh.service.LocaleConfig;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 
-@SpringBootTest
+@SpringBootTest(classes = {QuestionRepositoryCSV.class})
 class QuestionRepositoryCSVTest {
     @Configuration
     static class TestConfig {
     }
 
     @MockBean
+    private LocaleConfig localeConfig;
+
+    @MockBean
     private CSVLoader csvLoader;
 
-    private List<Question> originalQuestion;
-
-    public QuestionRepositoryCSVTest() {
-        initOriginalQuestions();
-    }
+    @Autowired
+    QuestionRepository questionRepository;
 
     @Test
     @DisplayName("getQuestionsTest: get questions")
     void getQuestionsTest() {
+        doReturn(getTestStringQuestionsList())
+                .when(csvLoader)
+                .loadFileFromResource(any());
+
         assertThatNoException().isThrownBy(() -> {
-            var questionRepository = getQuestionRepository(getTestStringQuestionsList());
             var questions = questionRepository.getQuestions();
 
-            assertThat(originalQuestion).isEqualTo(questions);
+            assertThat(getOriginalQuestions()).isEqualTo(questions);
         });
     }
 
     @Test
     @DisplayName("getQuestionsTest: incorrect question line in file")
     void getQuestionsIncorrectLineTest() {
+        doReturn(getIncorrectTestStringQuestionsList())
+                .when(csvLoader)
+                .loadFileFromResource(any());
+
         assertThatExceptionOfType(IncorrectQuestionFileException.class).isThrownBy(() ->
-                getQuestionRepository(getIncorrectTestStringQuestionsList()).getQuestions()
+                questionRepository.getQuestions()
         );
     }
 
     @Test
     @DisplayName("getQuestionsTest: no questions in file")
     void getQuestionsEmptyTest() {
+        doReturn(List.of())
+                .when(csvLoader)
+                .loadFileFromResource(any());
+
         assertThatExceptionOfType(IncorrectQuestionFileException.class).isThrownBy(() ->
-                getQuestionRepository(List.of()).getQuestions()
+                questionRepository.getQuestions()
         );
     }
 
-    private QuestionRepository getQuestionRepository(List<List<String>> testStringQuestionsList) {
-        Mockito.doReturn(testStringQuestionsList)
+    private QuestionRepository getQuestionRepository111(List<List<String>> testStringQuestionsList) {
+        doReturn(testStringQuestionsList)
                 .when(csvLoader)
-                .loadFileFromResource(anyString());
+                .loadFileFromResource(any());
 
-        return new QuestionRepositoryCSV(csvLoader, anyString());
+        return new QuestionRepositoryCSV(csvLoader, any());
     }
 
     private List<List<String>> getTestStringQuestionsList() {
@@ -80,7 +93,7 @@ class QuestionRepositoryCSVTest {
         );
     }
 
-    private void initOriginalQuestions() {
+    private List<Question> getOriginalQuestions() {
         var questionLine = getTestQuestionLine();
         var question = Question.builder()
                 .id(0)
@@ -94,7 +107,7 @@ class QuestionRepositoryCSVTest {
                 ))
                 .build();
 
-        originalQuestion = List.of(question);
+        return List.of(question);
     }
 
     private List<String> getTestQuestionLine() {

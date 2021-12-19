@@ -25,10 +25,10 @@ public class TestScoreCalculationServiceImpl implements TestScoreCalculationServ
 
     private String getResultMessage(TestResults testResults) {
         return String.format("%s%s", System.lineSeparator(),
-                isTestPassed(testResults)
-                        ? localisationService.getMessage("strings.test-passed", testResults.getPerson())
-                        : localisationService.getMessage("strings.test-failed", testResults.getPerson())
-        );
+                localisationService.getMessage(
+                        isTestPassed(testResults) ? "strings.test-passed" : "strings.test-failed",
+                        testResults.getPerson()
+                ));
     }
 
     private boolean isTestPassed(TestResults results) {

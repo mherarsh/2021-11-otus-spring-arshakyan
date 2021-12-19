@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import ru.mherarsh.domain.Answer;
 import ru.mherarsh.domain.Question;
 import ru.mherarsh.service.MessageLocalisationService;
@@ -18,18 +17,17 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-@SpringBootTest()
+@SpringBootTest(classes = {
+        QuestionAndAnswersEncoder.class,
+        AnswerIndexMapperNumbers.class
+})
 class QuestionAndAnswersEncoderTest {
     @Configuration
-    @Import(value = {
-            QuestionAndAnswersEncoder.class,
-            AnswerIndexMapperNumbers.class
-    })
     static class TestConfig {
     }
 
     @MockBean
-    MessageLocalisationService localisationService;
+    private MessageLocalisationService localisationService;
 
     @Autowired
     private QuestionEncoder questionEncoder;

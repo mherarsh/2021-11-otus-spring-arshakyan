@@ -2,10 +2,10 @@ package ru.mherarsh.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.mherarsh.dao.QuestionRepository;
-import ru.mherarsh.dao.impl.QuestionRepositoryCSV;
-import ru.mherarsh.service.*;
-import ru.mherarsh.service.impl.CSVLoaderImpl;
+import ru.mherarsh.service.MessageLocalisationService;
+import ru.mherarsh.service.PrintAdapter;
+import ru.mherarsh.service.ReaderAdapter;
+import ru.mherarsh.service.TestScoreCalculationService;
 import ru.mherarsh.service.impl.PrintStreamAdapter;
 import ru.mherarsh.service.impl.ReaderStreamAdapter;
 import ru.mherarsh.service.impl.TestScoreCalculationServiceImpl;
@@ -16,16 +16,6 @@ public class AppConfig {
 
     public AppConfig(AppProperties appProperties) {
         this.appProperties = appProperties;
-    }
-
-    @Bean
-    CSVLoader csvLoader() {
-        return new CSVLoaderImpl(appProperties.getLocaleConfig().getCsvSeparator());
-    }
-
-    @Bean
-    QuestionRepository questionRepository(CSVLoader csvLoader) {
-        return new QuestionRepositoryCSV(csvLoader, appProperties.getLocaleConfig().getCsvPath());
     }
 
     @Bean
