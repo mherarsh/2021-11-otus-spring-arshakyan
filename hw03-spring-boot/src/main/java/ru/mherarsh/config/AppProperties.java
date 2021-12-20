@@ -6,7 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import ru.mherarsh.service.CSVSource;
-import ru.mherarsh.service.LocaleConfig;
+import ru.mherarsh.service.CSVSourceProvider;
+import ru.mherarsh.service.LocaleConfigProvider;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -18,7 +19,7 @@ import java.util.Map;
 @Component
 @Validated
 @ConfigurationProperties("app")
-public class AppProperties implements LocaleConfig {
+public class AppProperties implements LocaleConfigProvider, CSVSourceProvider {
     private static final String DEFAULT_LANG_CONFIG_NAME = "default";
 
     private String lang;
@@ -29,16 +30,6 @@ public class AppProperties implements LocaleConfig {
     @NotNull
     private Test test;
 
-    public AppLangConfig getAppLangConfig() {
-        var langConfigName = getAppLangConfigName();
-
-        if (!langs.containsKey(langConfigName)) {
-            throw new IllegalArgumentException("resources for language '" + langConfigName + "' not found");
-        }
-
-        return langs.get(langConfigName);
-    }
-
     @Override
     public Locale getLocale() {
         return Locale.forLanguageTag(getAppLangConfig().getLocale());
@@ -47,6 +38,16 @@ public class AppProperties implements LocaleConfig {
     @Override
     public CSVSource getCsvSource() {
         return getAppLangConfig();
+    }
+
+    private AppLangConfig getAppLangConfig() {
+        var langConfigName = getAppLangConfigName();
+
+        if (!langs.containsKey(langConfigName)) {
+            throw new IllegalArgumentException("resources for language '" + langConfigName + "' not found");
+        }
+
+        return langs.get(langConfigName);
     }
 
     private String getAppLangConfigName() {

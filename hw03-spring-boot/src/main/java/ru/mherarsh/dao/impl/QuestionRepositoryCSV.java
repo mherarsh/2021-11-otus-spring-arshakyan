@@ -6,7 +6,7 @@ import ru.mherarsh.domain.Answer;
 import ru.mherarsh.domain.Question;
 import ru.mherarsh.exceptions.IncorrectQuestionFileException;
 import ru.mherarsh.service.CSVLoader;
-import ru.mherarsh.service.LocaleConfig;
+import ru.mherarsh.service.CSVSourceProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +15,11 @@ import java.util.Optional;
 @Service
 public class QuestionRepositoryCSV implements QuestionRepository {
     private final CSVLoader csvLoader;
-    private final LocaleConfig localeConfig;
+    private final CSVSourceProvider csvSourceProvider;
 
-    public QuestionRepositoryCSV(CSVLoader csvLoader, LocaleConfig localeConfig) {
+    public QuestionRepositoryCSV(CSVLoader csvLoader, CSVSourceProvider csvSourceProvider) {
         this.csvLoader = csvLoader;
-        this.localeConfig = localeConfig;
+        this.csvSourceProvider = csvSourceProvider;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class QuestionRepositoryCSV implements QuestionRepository {
     }
 
     private List<Question> getQuestionsFromCsv() {
-        var questionsFromCsv = csvLoader.loadFileFromResource(localeConfig.getCsvSource());
+        var questionsFromCsv = csvLoader.loadFileFromResource(csvSourceProvider.getCsvSource());
         var questions = new ArrayList<Question>();
 
         for (int i = 0; i < questionsFromCsv.size(); i++) {

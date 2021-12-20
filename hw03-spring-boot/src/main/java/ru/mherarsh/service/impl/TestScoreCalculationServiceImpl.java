@@ -5,8 +5,6 @@ import ru.mherarsh.service.MessageLocalisationService;
 import ru.mherarsh.service.PrintAdapter;
 import ru.mherarsh.service.TestScoreCalculationService;
 
-import java.util.Map;
-
 public class TestScoreCalculationServiceImpl implements TestScoreCalculationService {
     private final PrintAdapter printAdapter;
     private final int testMinimumScore;
@@ -32,10 +30,6 @@ public class TestScoreCalculationServiceImpl implements TestScoreCalculationServ
     }
 
     private boolean isTestPassed(TestResults results) {
-        return calculateScore(results) >= testMinimumScore;
-    }
-
-    private long calculateScore(TestResults results) {
-        return results.getResults().entrySet().stream().filter(Map.Entry::getValue).count();
+        return results.getRightAnswersCount() >= testMinimumScore;
     }
 }

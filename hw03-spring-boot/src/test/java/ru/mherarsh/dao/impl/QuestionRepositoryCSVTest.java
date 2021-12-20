@@ -5,13 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Configuration;
 import ru.mherarsh.dao.QuestionRepository;
 import ru.mherarsh.domain.Answer;
 import ru.mherarsh.domain.Question;
 import ru.mherarsh.exceptions.IncorrectQuestionFileException;
 import ru.mherarsh.service.CSVLoader;
-import ru.mherarsh.service.LocaleConfig;
+import ru.mherarsh.service.CSVSourceProvider;
 
 import java.util.List;
 
@@ -21,18 +20,14 @@ import static org.mockito.Mockito.doReturn;
 
 @SpringBootTest(classes = {QuestionRepositoryCSV.class})
 class QuestionRepositoryCSVTest {
-    @Configuration
-    static class TestConfig {
-    }
-
     @MockBean
-    private LocaleConfig localeConfig;
+    private CSVSourceProvider csvSourceProvider;
 
     @MockBean
     private CSVLoader csvLoader;
 
     @Autowired
-    QuestionRepository questionRepository;
+    private QuestionRepository questionRepository;
 
     @Test
     @DisplayName("getQuestionsTest: get questions")
