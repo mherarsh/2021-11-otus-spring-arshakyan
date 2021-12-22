@@ -27,4 +27,10 @@ public class UserInputServiceImpl implements UserInputService {
 
         return userInput;
     }
+
+    @Override
+    public String getInput(String description) {
+        printAdapter.print(description + ": ");
+        return readerAdapter.readLine();
+    }
 }
