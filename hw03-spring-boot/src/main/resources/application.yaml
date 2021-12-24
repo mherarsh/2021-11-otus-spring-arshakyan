@@ -1,0 +1,24 @@
+spring:
+  messages:
+    encoding: utf-8
+    basename: i18n/messages
+
+app:
+  lang: en
+
+  langs:
+    default:
+      csvSeparator: ";"
+      csvPath: "questions/questions_en.csv"
+      locale: "en"
+    en:
+      csvSeparator: ";"
+      csvPath: "questions/questions_en.csv"
+      locale: "en"
+    ru:
+      csvSeparator: ";"
+      csvPath: "questions/questions_ru.csv"
+      locale: "ru"
+
+  test:
+    minimumScore: 3
